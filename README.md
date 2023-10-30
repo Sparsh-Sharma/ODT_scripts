@@ -100,7 +100,7 @@ This Python script calculates the ensemble average velocity field and visualizes
 3. Run the script, providing the base directory containing simulation data.
 
    ```shell
-   python script3.py
+   python TKE_MultRlz.py
    ```
 
 4. The script will calculate the ensemble average velocity field and TKE field, visualize them, and save as PDF files.
@@ -119,9 +119,9 @@ This project is licensed under the MIT License. See the [LICENSE](./LICENSE) fil
 
 If you find these scripts helpful in your research related to one-dimensional turbulence (ODT), please consider citing our paper:
 
-- [Title of Your Paper](https://doi.org/10.1063/5.0101270)
-- Author(s): Your Name(s)
-- Published in: Journal Name
+- [Features of far-downstream asymptotic velocity fluctuations in a round jet: A one-dimensional turbulence study](https://doi.org/10.1063/5.0101270)
+- Author(s): Sparsh Sharma; Marten Klein; Heiko Schmidt 
+- Published in: Physics of Fluids 34, 085134 (2022)
 - DOI: [https://doi.org/10.1063/5.0101270](https://doi.org/10.1063/5.0101270)
 ---
 
