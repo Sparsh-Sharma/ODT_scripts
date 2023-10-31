@@ -105,6 +105,97 @@ This Python script calculates the ensemble average velocity field and visualizes
 
 4. The script will calculate the ensemble average velocity field and TKE field, visualize them, and save as PDF files.
 
+### Script 4: Eddy Sequence Visualizer
+
+![Python](https://img.shields.io/badge/Python-3.x-blue.svg)
+
+#### Description
+
+This Python script visualizes eddy sequences based on data from '.dat' files. Key features include:
+
+- Data extraction and visualization of eddy sequences.
+- Customizable color mapping for visualizing eddies.
+- Export the visualized eddy sequences as a PDF file.
+- User-friendly with detailed comments.
+
+#### Usage
+
+1. Clone this repository to your local machine.
+
+2. Install the required Python packages:
+
+   ```shell
+   pip install -r requirements.txt
+   ```
+
+3. Run the script, providing the path to the eddy sequence data.
+
+   ```shell
+   python plot2d.py
+   ```
+
+4. The script will visualize the eddy sequences and save them as a PDF file.
+
+### Script 5: Eddy Size Histogram and CDF
+
+![Python](https://img.shields.io/badge/Python-3.x-blue.svg)
+
+#### Description
+
+This Python script generates histograms and cumulative distribution functions (CDF) for eddy sizes. Key features include:
+
+- Data extraction and visualization of eddy size histograms and CDFs.
+- Customizable bin count and starting point for data analysis.
+- User-friendly with detailed comments.
+
+#### Usage
+
+1. Clone this repository to your local machine.
+
+2. Install the required Python packages:
+
+   ```shell
+   pip install -r requirements.txt
+   ```
+
+3. Run the script, providing the case name and shift as arguments. You can also specify the number of bins and starting point (optional).
+
+   ```shell
+   python plot2dEddySequence.py CASE_NAME SHIFT [NBINS] [NSTART]
+   ```
+
+4. The script will generate histograms and CDFs for eddy sizes.
+
+### Script 6: Interior vs. Near-Wall Eddy Size Analysis
+
+![Python](https://img.shields.io/badge/Python-3.x-blue.svg)
+
+#### Description
+
+This Python script performs an analysis of interior vs. near-wall eddy sizes. Key features include:
+
+- Data extraction and visualization of interior and near-wall eddy sizes.
+- User-friendly with detailed comments.
+- Customizable bin count and starting point for data analysis.
+
+#### Usage
+
+1. Clone this repository to your local machine.
+
+2. Install the required Python packages:
+
+   ```shell
+   pip install -r requirements.txt
+   ```
+
+3. Run the script, providing the case name and shift as arguments. You can also specify the number of bins and starting point (optional).
+
+   ```shell
+   python plotEddyStats.py CASE_NAME SHIFT [NBINS] [NSTART]
+   ```
+
+4. The script will perform the analysis and display the results.
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
