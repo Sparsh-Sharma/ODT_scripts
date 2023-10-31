@@ -1,0 +1,18 @@
+=== USAGE ===
+
+Copy into a data subfolder, e.g.:
+
+$odtHome/data/channelFlow/post/
+
+I assume there are ODT runs denoted as "case1", "case2" etc. as:
+
+$odtHome/data/channelFlow/case1 $odtHome/data/channelFlow/case2
+
+Each of these directories has subdirectories input/ and data/data_00000/
+containing the odt_input.yaml and model output, respectively. From
+within the repo $odtHome/data/chanelFlow/post, then call:
+
+python3 plotEddyStats.py ../case1 0    # and likewise for case2
+
+There are optional arguments controlling the first eddy and the number
+of bins. The call for the 2D plot is similar.
