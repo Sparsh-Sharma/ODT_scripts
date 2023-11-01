@@ -196,6 +196,37 @@ This Python script performs an analysis of interior vs. near-wall eddy sizes. Ke
 
 4. The script will perform the analysis and display the results.
 
+### Script 7: Sound Pressure Level Calculation
+
+![Python](https://img.shields.io/badge/Python-3.x-blue.svg)
+
+#### Description
+
+This Python script calculates sound pressure levels (Lp) based on provided data. Key features include:
+
+- Data processing and sound pressure level calculation.
+- Customizable input parameters for calculations.
+- Visualization of the results with Strouhal number on a logarithmic scale.
+- User-friendly with detailed comments.
+
+#### Usage
+
+1. Clone this repository to your local machine.
+
+2. Install the required Python packages:
+
+   ```shell
+   pip install -r requirements.txt
+   ```
+
+3. Run the script and follow the prompts to provide input data, including the value of 'r' and 'theta', the number of .dat files to process, and the number of points to skip between data points.
+
+   ```shell
+   python ODT_Tam_Aur.py
+   ```
+
+4. The script will calculate sound pressure levels and generate visualizations.
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
