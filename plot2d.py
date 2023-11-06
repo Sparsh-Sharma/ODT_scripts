@@ -42,7 +42,13 @@ pl.ylabel('y (m)',labelpad=1.5, fontsize=20)
 pl.xlim(0,.5)
 pl.ylim(-0.05,0.05)
 for j in range(neddy):
-     pl.plot([eddyTimes[idx][j], eddyTimes[idx][j]], [eddyLeftEdges[idx][j], eddyRightEdges[idx][j]], 'k_-', lw=0.5, ms=0.3)
+    # Draw horizontal bars connecting the left and right edges
+    pl.hlines(eddyLeftEdges[idx][j], eddyTimes[idx][j] - 0.001, eddyTimes[idx][j] + 0.001, colors='k', lw=0.5)
+    pl.hlines(eddyRightEdges[idx][j], eddyTimes[idx][j] - 0.001, eddyTimes[idx][j] + 0.001, colors='k', lw=0.5)
+
+    # Plot vertical lines at the eddy times
+    pl.plot([eddyTimes[idx][j], eddyTimes[idx][j]], [eddyLeftEdges[idx][j], eddyRightEdges[idx][j]], 'k_-', lw=0.5, ms=0.3)
+
 pl.savefig('eddySeq-.pdf')  
 
 print("--- %s seconds ---" % (time.time() - start_time))   
