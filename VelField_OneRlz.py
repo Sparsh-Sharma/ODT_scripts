@@ -47,6 +47,8 @@ for filename in os.listdir(data_dir):
             numeric_lines = [line for line in lines if any(char.isdigit() or char == '.' or char == '-' for char in line)]
             data = np.loadtxt(numeric_lines, dtype=float)
             data_arrays.append(data)
+        # Print the name of the file
+        print(f"Read file: {filename}")
 
 # Assuming that each data array has the same number of rows
 num_rows = data_arrays[0].shape[0]
