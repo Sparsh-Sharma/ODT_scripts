@@ -37,18 +37,19 @@ data_arrays = []
 # Number of rows to skip at the beginning of each file
 skip_rows = 5
 
-# Iterate through the .dat files starting with "dmp_"
-for filename in os.listdir(data_dir):
-    if filename.startswith("dmp_") and filename.endswith(".dat"):
-        file_path = os.path.join(data_dir, filename)
-        with open(file_path, 'r') as file:
-            # Read lines, skip the first 5, and filter out non-numeric lines
-            lines = file.readlines()[skip_rows:]
-            numeric_lines = [line for line in lines if any(char.isdigit() or char == '.' or char == '-' for char in line)]
-            data = np.loadtxt(numeric_lines, dtype=float)
-            data_arrays.append(data)
-        # Print the name of the file
-        print(f"Read file: {filename}")
+# Get a list of "dmp_" files sorted by filename
+file_list = sorted([filename for filename in os.listdir(data_dir) if filename.startswith("dmp_") and filename.endswith(".dat")])
+
+for filename in file_list:
+    file_path = os.path.join(data_dir, filename)
+    with open(file_path, 'r') as file:
+        # Read lines, skip the first 5, and filter out non-numeric lines
+        lines = file.readlines()[skip_rows:]
+        numeric_lines = [line for line in lines if any(char.isdigit() or char == '.' or char == '-' for char in line)]
+        data = np.loadtxt(numeric_lines, dtype=float)
+        data_arrays.append(data)
+    # Print the name of the file
+    print(f"Read file: {filename}")
 
 # Assuming that each data array has the same number of rows
 num_rows = data_arrays[0].shape[0]
