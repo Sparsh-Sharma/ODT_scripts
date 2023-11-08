@@ -33,8 +33,8 @@ pl.xticks(fontsize=20)
 pl.yticks(fontsize=20)
 pl.xlabel('x (m)', fontsize=20)
 pl.ylabel('y (m)', labelpad=1.5, fontsize=20)
-pl.xlim(0, 0.5)
-pl.ylim(-0.05, 0.05)
+# pl.xlim(0, 0.5)
+# pl.ylim(-0.05, 0.05)
 
 for j in range(0, len(eddyTimes), n):
     # Draw horizontal bars connecting the left and right edges
