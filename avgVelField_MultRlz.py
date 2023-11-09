@@ -41,22 +41,25 @@ for sim_dir in os.listdir(base_dir):
         sim_dir_path = os.path.join(base_dir, sim_dir)
         if os.path.isdir(sim_dir_path):
             sim_data = []  # Store data from the current simulation
-            # Iterate through the .dat files in the simulation directory
+
+            # Get a list of "dmp_" files sorted by filename
+            file_list = sorted([filename for filename in os.listdir(sim_dir_path) if filename.startswith("dmp_") and filename.endswith(".dat")])
+
+            # Iterate through the sorted list of "dmp_" files
             print(f"Processing directory {sim_dir}")
-            for filename in os.listdir(sim_dir_path):
-                if filename.startswith("dmp_") and filename.endswith(".dat"):
-                    file_path = os.path.join(sim_dir_path, filename)
-                    with open(file_path, 'r') as file:
-                        # Read lines, skip the first 5, and filter out non-numeric lines
-                        lines = file.readlines()[skip_rows:]
-                        numeric_lines = [line for line in lines if any(char.isdigit() or char == '.' or char == '-' for char in line)]
-                        data = np.loadtxt(numeric_lines, dtype=float)
-                        sim_data.append(data)
-                        # If ensemble_sum is None, initialize it with the first data array
-                        if ensemble_sum is None:
-                            ensemble_sum = data
-                        else:
-                            ensemble_sum += data
+            for filename in file_list:
+                file_path = os.path.join(sim_dir_path, filename)
+                with open(file_path, 'r') as file:
+                    # Read lines, skip the first 5, and filter out non-numeric lines
+                    lines = file.readlines()[skip_rows:]
+                    numeric_lines = [line for line in lines if any(char.isdigit() or char == '.' or char == '-' for char in line)]
+                    data = np.loadtxt(numeric_lines, dtype=float)
+                    sim_data.append(data)
+                    # If ensemble_sum is None, initialize it with the first data array
+                    if ensemble_sum is None:
+                        ensemble_sum = data
+                    else:
+                        ensemble_sum += data
 
             # Add the data from the current simulation to the list
             data_arrays.append(sim_data)
@@ -65,9 +68,9 @@ for sim_dir in os.listdir(base_dir):
             if len(data_arrays) == num_ensembles:
                 break
 
-        # Calculate the time elapsed and display a dynamic message
-        elapsed_time = time.time() - start_time
-        print(f"Processed directory {sim_dir}, Elapsed time: {elapsed_time:.2f} seconds")
+            # Calculate the time elapsed and display a dynamic message
+            elapsed_time = time.time() - start_time
+            print(f"Processed directory {sim_dir}, Elapsed time: {elapsed_time:.2f} seconds")
 
 # Calculate the ensemble average by dividing the sum by the number of simulations
 ensemble_average = ensemble_sum / len(data_arrays)
