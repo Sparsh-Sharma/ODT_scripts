@@ -91,12 +91,12 @@ for i in range(num_columns):
     velocity_field_ensemble[:, i] /= len(data_arrays)
 
 # Define the desired colorbar range
-vmin = 0  # Minimum value
-vmax = 170  # Maximum value
+# vmin = 0  # Minimum value
+# vmax = 170  # Maximum value
 
 # Visualize the ensemble average 2D velocity field with the specified colorbar range
 plt.figure(figsize=(12, 6))
-plt.imshow(velocity_field_ensemble, cmap='jet', aspect='auto', vmin=vmin, vmax=vmax)
+plt.imshow(velocity_field_ensemble, cmap='jet', aspect='auto', vmin=velocity_field_ensemble[:,1:].min(), vmax=velocity_field_ensemble[:,1:].max())
 cbar = plt.colorbar()
 plt.ylim(950, 1050)
 cbar.set_label('Velocity')
