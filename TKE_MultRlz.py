@@ -42,7 +42,11 @@ def process_data(base_dir):
                     numeric_lines = [line for line in lines if any(char.isdigit() or char == '.' or char == '-' for char in line)]
                     data = np.loadtxt(numeric_lines, dtype=float)
                     data_arrays.append(data)
-                # print(f"Read file: {filename}")
+                    # Print the name of the file and overwrite the existing line
+                    print(f"\rRead file: {filename}", end='', flush=True)
+                    time.sleep(0.0001)  # Optional: Add a short delay to visualize the update
+            # Print a new line after completing the loop
+            print()
             num_rows = data_arrays[0].shape[0]
             num_columns = len(data_arrays)
             velocity_field = np.zeros((num_rows, num_columns))
@@ -91,7 +95,7 @@ for sim_dir in sorted([d for d in os.listdir(base_dir) if d.startswith("data_")]
     if os.path.isdir(sim_dir_path):
         sim_data = []  # Store data from the current simulation
         print(f"\033[1;35mProcessing directory {sim_dir}\033[0m")
-
+        start_time = time.time()
         # Sort the list of "dmp_" files
         dmp_files = sorted([filename for filename in os.listdir(sim_dir_path) if filename.startswith("dmp_") and filename.endswith(".dat")])
 
@@ -104,13 +108,16 @@ for sim_dir in sorted([d for d in os.listdir(base_dir) if d.startswith("data_")]
                 numeric_lines = [line for line in lines if any(char.isdigit() or char == '.' or char == '-' for char in line)]
                 data = np.loadtxt(numeric_lines, dtype=float)
                 sim_data.append(data)
-                # print(f"Read file: {filename}")
+                print(f"\rRead file: {filename}", end='', flush=True)
+                time.sleep(0.0001)  # Optional: Add a short delay to visualize the update
+
                 # If ensemble_sum is None, initialize it with the first data array
                 if ensemble_sum is None:
                     ensemble_sum = data
                 else:
                     ensemble_sum += data
-
+        # Print a new line after completing the loop
+        print()
         # Add the data from the current simulation to the list
         data_arrays.append(sim_data)
 
