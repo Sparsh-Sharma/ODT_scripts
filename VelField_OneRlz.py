@@ -40,6 +40,7 @@ skip_rows = 5
 # Get a list of "dmp_" files sorted by filename
 file_list = sorted([filename for filename in os.listdir(data_dir) if filename.startswith("dmp_") and filename.endswith(".dat")])
 
+# Iterate through the sorted list of "dmp_" files
 for filename in file_list:
     file_path = os.path.join(data_dir, filename)
     with open(file_path, 'r') as file:
@@ -48,8 +49,13 @@ for filename in file_list:
         numeric_lines = [line for line in lines if any(char.isdigit() or char == '.' or char == '-' for char in line)]
         data = np.loadtxt(numeric_lines, dtype=float)
         data_arrays.append(data)
-    # Print the name of the file
-    print(f"Read file: {filename}")
+    
+    # Print the name of the file and overwrite the existing line
+    print(f"\rRead file: {filename}", end='', flush=True)
+    time.sleep(0.0001)  # Optional: Add a short delay to visualize the update
+
+# Print a new line after completing the loop
+print()
 
 # Assuming that each data array has the same number of rows
 num_rows = data_arrays[0].shape[0]
