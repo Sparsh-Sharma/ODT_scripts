@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 """
+Created on Mon Nov 13 12:53:35 2023
+
+@author: shar_sp
+"""
+
+# -*- coding: utf-8 -*-
+"""
 Created on Sun Oct 22 09:06:28 2023
 
 @author: shar_sp
@@ -15,7 +22,7 @@ def process_data(base_dir):
     mean_A_values = []
 
     # Iterate over directories that match the pattern 'data_*'
-    for folder_name in os.listdir(base_dir):
+    for folder_name in sorted(os.listdir(base_dir)):
         if folder_name.startswith("data_") and os.path.isdir(os.path.join(base_dir, folder_name)):
             data_dir = os.path.join(base_dir, folder_name)
             # Rest of your code remains the same with slight modifications
@@ -24,18 +31,24 @@ def process_data(base_dir):
             message = "\033[1;31mProcessing directory {}\033[0m".format(folder_name)
             print(message)
             start_time = time.time()
-            for filename in os.listdir(data_dir):
-                if filename.startswith("dmp_") and filename.endswith(".dat"):
-                    file_path = os.path.join(data_dir, filename)
-                    with open(file_path, 'r') as file:
-                        lines = file.readlines()[skip_rows:]
-                        numeric_lines = [line for line in lines if any(char.isdigit() or char == '.' or char == '-' for char in line)]
-                        data = np.loadtxt(numeric_lines, dtype=float)
-                        data_arrays.append(data)
+            
+            # Sort the list of "dmp_" files
+            file_list = sorted([filename for filename in os.listdir(data_dir) if filename.startswith("dmp_") and filename.endswith(".dat")])
 
+            for filename in file_list:
+                file_path = os.path.join(data_dir, filename)
+                with open(file_path, 'r') as file:
+                    lines = file.readlines()[skip_rows:]
+                    numeric_lines = [line for line in lines if any(char.isdigit() or char == '.' or char == '-' for char in line)]
+                    data = np.loadtxt(numeric_lines, dtype=float)
+                    data_arrays.append(data)
+                # print(f"Read file: {filename}")
             num_rows = data_arrays[0].shape[0]
             num_columns = len(data_arrays)
             velocity_field = np.zeros((num_rows, num_columns))
+
+            # # Assuming velocity_field_ensemble is defined somewhere
+            # velocity_field_ensemble = np.zeros((num_rows, num_columns))
 
             for i, data in enumerate(data_arrays):
                 velocity_field[:, i] = data[:, 4]
@@ -73,35 +86,39 @@ ensemble_sum = None
 skip_rows = 5
 
 # Iterate through simulation directories
-for sim_dir in os.listdir(base_dir):
-    if sim_dir.startswith("data_"):
-        sim_dir_path = os.path.join(base_dir, sim_dir)
-        if os.path.isdir(sim_dir_path):
-            sim_data = []  # Store data from the current simulation
-            print(f"\033[1;35mProcessing directory {sim_dir}\033[0m")
-            # Iterate through the .dat files in the simulation directory
-            for filename in os.listdir(sim_dir_path):
-                if filename.startswith("dmp_") and filename.endswith(".dat"):
-                    file_path = os.path.join(sim_dir_path, filename)
-                    with open(file_path, 'r') as file:
-                        # Read lines, skip the first 5, and filter out non-numeric lines
-                        lines = file.readlines()[skip_rows:]
-                        numeric_lines = [line for line in lines if any(char.isdigit() or char == '.' or char == '-' for char in line)]
-                        data = np.loadtxt(numeric_lines, dtype=float)
-                        sim_data.append(data)
-                        # If ensemble_sum is None, initialize it with the first data array
-                        if ensemble_sum is None:
-                            ensemble_sum = data
-                        else:
-                            ensemble_sum += data
-    
-            # Add the data from the current simulation to the list
-            data_arrays.append(sim_data)
-    
+for sim_dir in sorted([d for d in os.listdir(base_dir) if d.startswith("data_")]):
+    sim_dir_path = os.path.join(base_dir, sim_dir)
+    if os.path.isdir(sim_dir_path):
+        sim_data = []  # Store data from the current simulation
+        print(f"\033[1;35mProcessing directory {sim_dir}\033[0m")
+
+        # Sort the list of "dmp_" files
+        dmp_files = sorted([filename for filename in os.listdir(sim_dir_path) if filename.startswith("dmp_") and filename.endswith(".dat")])
+
+        # Iterate through the sorted list of "dmp_" files
+        for filename in dmp_files:
+            file_path = os.path.join(sim_dir_path, filename)
+            with open(file_path, 'r') as file:
+                # Read lines, skip the first 5, and filter out non-numeric lines
+                lines = file.readlines()[skip_rows:]
+                numeric_lines = [line for line in lines if any(char.isdigit() or char == '.' or char == '-' for char in line)]
+                data = np.loadtxt(numeric_lines, dtype=float)
+                sim_data.append(data)
+                # print(f"Read file: {filename}")
+                # If ensemble_sum is None, initialize it with the first data array
+                if ensemble_sum is None:
+                    ensemble_sum = data
+                else:
+                    ensemble_sum += data
+
+        # Add the data from the current simulation to the list
+        data_arrays.append(sim_data)
+
         # Calculate the time elapsed and display a dynamic message
         elapsed_time = time.time() - start_time
         # Yellow text for the processing message
-        print(f"\033[1;33mProcessing directory {sim_dir}, Elapsed time: {elapsed_time:.2f} seconds\033[0m")
+        print(f"\033[1;33mProcessed directory {sim_dir}, Elapsed time: {elapsed_time:.2f} seconds\033[0m")
+
 
 
 # ... (continue with the rest of your code)
@@ -134,11 +151,11 @@ plt.rcParams['font.family'] = 'serif'
 # plt.rcParams['font.serif'] = ['Times New Roman']
 plt.rcParams['font.size'] = 11
 
-vmin = 0  # Minimum value
-vmax = 170  # Maximum value
+# vmin = 0  # Minimum value
+# vmax = 100  # Maximum value
 
 plt.figure(figsize=(12, 6))
-plt.imshow(velocity_field_ensemble, cmap='jet', aspect='auto', vmin=vmin, vmax=vmax)
+plt.imshow(velocity_field_ensemble, cmap='jet', aspect='auto', vmin=velocity_field_ensemble[:,1:].min(), vmax=velocity_field_ensemble[:,1:].max())
 cbar = plt.colorbar()
 plt.ylim(950, 1050)
 cbar.set_label('Velocity')
@@ -164,8 +181,8 @@ plt.show()
 #%%
 # Plot or save the mean A field as needed
 plt.figure(figsize=(12, 6))
-plt.ylim(980, 1020)
-plt.xlim(0, 200)
+plt.ylim(800, 1200)
+plt.xlim(0, 500)
 plt.imshow((mean_A ** 2) / 2000, cmap='jet', aspect='auto')
 cbar = plt.colorbar()
 cbar.set_label('TKE')
