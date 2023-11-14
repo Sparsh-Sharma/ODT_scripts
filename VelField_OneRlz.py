@@ -52,7 +52,7 @@ for filename in file_list:
     
     # Print the name of the file and overwrite the existing line
     print(f"\rRead file: {filename}", end='', flush=True)
-    time.sleep(0.0001)  # Optional: Add a short delay to visualize the update
+    time.sleep(0)  # Optional: Add a short delay to visualize the update
 
 # Print a new line after completing the loop
 print()
