@@ -57,12 +57,14 @@ for sim_dir in sim_dirs:
                 numeric_lines = [line for line in lines if any(char.isdigit() or char == '.' or char == '-' for char in line)]
                 data = np.loadtxt(numeric_lines, dtype=float)
                 sim_data.append(data)
+                print(f"\rRead file: {filename}", end='', flush=True)
                 # If ensemble_sum is None, initialize it with the first data array
                 if ensemble_sum is None:
                     ensemble_sum = data
                 else:
                     ensemble_sum += data
 
+        print()
         # Add the data from the current simulation to the list
         data_arrays.append(sim_data)
 
@@ -90,25 +92,23 @@ for i in range(num_columns):
         velocity_field_ensemble[:, i] += sim_data[i][:, 4]  # Assuming the velocities are in the 5th column
     velocity_field_ensemble[:, i] /= len(data_arrays)
 
-# Define the desired colorbar range
-# vmin = 0  # Minimum value
-# vmax = 170  # Maximum value
+# Normalize the x-axis and y-axis by dividing by the diameter of the beam (D)
+D = 0.062
+num_points = 2497
 
-# Visualize the ensemble average 2D velocity field with the specified colorbar range
+normalized_x_axis = np.linspace(0/D, 6.2/D, num_points)
+normalized_y_axis = np.linspace(1/D, -1/D, len(velocity_field_ensemble))
+
+# Plot the data with the normalized x and y axes
 plt.figure(figsize=(12, 6))
-plt.imshow(velocity_field_ensemble, cmap='jet', aspect='auto', vmin=velocity_field_ensemble[:,1:].min(), vmax=velocity_field_ensemble[:,1:].max())
+plt.imshow(velocity_field_ensemble, cmap='jet', aspect='auto',
+           extent=[0/D, 6.2/D, -1/D, 1/D],
+           vmin=velocity_field_ensemble[:, 1:].min(), vmax=velocity_field_ensemble[:, 1:].max())
 cbar = plt.colorbar()
-plt.ylim(950, 1050)
 cbar.set_label('Velocity')
-plt.xlabel('File Index (Time)')
-plt.ylabel('Vertical Position Index')
-
-# Set custom x-axis ticks
-custom_x_ticks = [0, 400, 800, 1200, 1600, 1980]
-custom_x_tick_labels = ['0', '20', '40', '60', '80', '100']
-plt.xticks(custom_x_ticks, custom_x_tick_labels)
-plt.yticks([950, 975, 1000, 1025, 1050], ['-10', '-5', '0', '5', '10'])
+plt.xlabel('x/D')
 plt.ylabel('y/D')
+
 
 # Ask the user for the figure filename
 figure_filename = input("Please enter the filename to save the figure (e.g., 'average_velocity_field.pdf'): ")
