@@ -44,7 +44,7 @@ def process_data(base_dir):
                     data_arrays.append(data)
                     # Print the name of the file and overwrite the existing line
                     print(f"\rRead file: {filename}", end='', flush=True)
-                    time.sleep(0.0001)  # Optional: Add a short delay to visualize the update
+                    # time.sleep(0.0001)  # Optional: Add a short delay to visualize the update
             # Print a new line after completing the loop
             print()
             num_rows = data_arrays[0].shape[0]
@@ -109,7 +109,7 @@ for sim_dir in sorted([d for d in os.listdir(base_dir) if d.startswith("data_")]
                 data = np.loadtxt(numeric_lines, dtype=float)
                 sim_data.append(data)
                 print(f"\rRead file: {filename}", end='', flush=True)
-                time.sleep(0.0001)  # Optional: Add a short delay to visualize the update
+                # time.sleep(0.0001)  # Optional: Add a short delay to visualize the update
 
                 # If ensemble_sum is None, initialize it with the first data array
                 if ensemble_sum is None:
@@ -148,84 +148,61 @@ for i in range(num_columns):
 # Process the data using the function and save it
 print("Let's find out the fluctuations")
 mean_A = process_data(base_dir)
-#%%
-# Continue with plotting or saving the mean A field as needed
-# Visualize the ensemble average 2D velocity field with the specified colorbar range
-# Define the desired colorbar range
-# Set the font family and font size
+
+# Set font properties
 plt.rcParams['font.family'] = 'serif'
-# plt.rcParams['font.serif'] = ['Computer Modern Roman']
-# plt.rcParams['font.serif'] = ['Times New Roman']
 plt.rcParams['font.size'] = 11
 
-# vmin = 0  # Minimum value
-# vmax = 100  # Maximum value
+# Normalize the x-axis and y-axis by dividing by the diameter of the beam (D)
+D = 0.062
+num_points = 2497
 
+normalized_x_axis = np.linspace(0/D, 6.2/D, num_points)
+normalized_y_axis = np.linspace(1/D, -1/D, len(velocity_field_ensemble))
+
+# Plot the ensemble average 2D velocity field
 plt.figure(figsize=(12, 6))
-plt.imshow(velocity_field_ensemble, cmap='jet', aspect='auto', vmin=velocity_field_ensemble[:,1:].min(), vmax=velocity_field_ensemble[:,1:].max())
+plt.imshow(velocity_field_ensemble, cmap='jet', aspect='auto',
+           extent=[0/D, 6.2/D, -1/D, 1/D],
+           vmin=velocity_field_ensemble[:, 1:].min(), vmax=velocity_field_ensemble[:, 1:].max())
 cbar = plt.colorbar()
-plt.ylim(950, 1050)
 cbar.set_label('Velocity')
-plt.xlabel('File Index (Time)')
-plt.ylabel('Vertical Position Index')
-
-# Set custom x-axis ticks
-custom_x_ticks = [0, 400, 800, 1200, 1600, 1980]
-custom_x_tick_labels = ['0', '20', '40', '60', '80', '100']
-plt.xticks(custom_x_ticks, custom_x_tick_labels)
 plt.xlabel('x/D')
-
-custom_y_ticks = [950, 975, 1000, 1025, 1050]
-custom_y_tick_labels = ['-10', '-5', '0', '5', '10']
-plt.yticks(custom_y_ticks, custom_y_tick_labels)
 plt.ylabel('y/D')
-
-# Save the ensemble average figure as a high-resolution PDF
 plt.savefig('average_velocity_field1.pdf', dpi=300, bbox_inches='tight')
-
 plt.show()
 
-#%%
-# Plot or save the mean A field as needed
+# Plot the mean TKE field
 plt.figure(figsize=(12, 6))
-plt.ylim(800, 1200)
-plt.xlim(0, 500)
-plt.imshow((mean_A ** 2) / 2000, cmap='jet', aspect='auto')
+TKE = (mean_A ** 2) / 2000
+plt.imshow(TKE, cmap='jet', aspect='auto',
+           extent=[0/D, 6.2/D, -1/D, 1/D],
+           vmin=TKE[:, 1:].min(), vmax=TKE[:, 1:].max()/1.8)
 cbar = plt.colorbar()
 cbar.set_label('TKE')
-custom_x_ticks = [0,40,80,120,160,200]
-custom_x_tick_labels = ['0','2','4','6','8','10']
-plt.xticks(custom_x_ticks, custom_x_tick_labels)
+plt.ylim(-5, 5)
+plt.xlim(0, 20)
 plt.xlabel('x/D')
-custom_y_ticks = [980,990,1000,1010,1020]
-custom_y_tick_labels = ['-4','-2','0','2','4']#,'0.1','0.2','0.3','0.4','0.5']
-plt.yticks(custom_y_ticks, custom_y_tick_labels)
 plt.ylabel('y/D')
 plt.savefig('mean_TKE_field_ZoomIn.pdf', dpi=1200, bbox_inches='tight')
 plt.show()
 
+# Plot another view of the mean TKE field
 plt.figure(figsize=(12, 6))
-plt.ylim(950,1050)
-plt.imshow((mean_A ** 2) / 2000, cmap='jet', aspect='auto')
+plt.imshow(TKE, cmap='jet', aspect='auto',
+           extent=[0/D, 6.2/D, -1/D, 1/D],
+           vmin=TKE[:, 1:].min(), vmax=TKE[:, 1:].max())
 cbar = plt.colorbar()
 cbar.set_label('TKE')
-custom_x_ticks = [0,400,800,1200,1600, 1980]
-custom_x_tick_labels = ['0','20','40','60','80','100']
-plt.xticks(custom_x_ticks, custom_x_tick_labels)
 plt.xlabel('x/D')
-custom_y_ticks = [950,975,1000,1025,1050]
-custom_y_tick_labels = ['-10','-5','0','5','10']#,'0.1','0.2','0.3','0.4','0.5']
-plt.yticks(custom_y_ticks, custom_y_tick_labels)
 plt.ylabel('y/D')
 plt.savefig('mean_TKE_field_ZoomOut.pdf', dpi=1200, bbox_inches='tight')
 plt.show()
 
-#%%
 # Save 'velocity_field_ensemble' and 'mean_A' in .npy format
 np.save('velocity_field_ensemble.npy', velocity_field_ensemble)
 np.save('mean_A.npy', mean_A)
-message = "\033[1;32mEnsemble averaged velocity is saved as velocity_field_ensemble.npy\033[0m"
-print(message)
-message = "\033[1;35mTKE is saved as velocity_field_ensemble.npy\033[0m"
-print(message)
-print("--- %s seconds ---" % (time.time() - start_time))
+
+# Print messages
+print("\033[1;32mEnsemble averaged velocity is saved as velocity_field_ensemble.npy\033[0m")
+print("\033[1;35mTKE is saved as velocity_field_ensemble.npy\033[0m")
