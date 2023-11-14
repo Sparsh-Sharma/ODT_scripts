@@ -68,25 +68,24 @@ velocity_field = np.zeros((num_rows, num_columns))
 for i, data in enumerate(data_arrays):
     velocity_field[:, i] = data[:, 4]  # Assuming the velocities are in the 5th column
 
-# Define the desired colorbar range
-vmin = 10  # Minimum value
-vmax = 100  # Maximum value
-plt.figure(figsize=(12, 6))
-# Visualize the 2D velocity field with the specified colorbar range
-plt.imshow(velocity_field, cmap='jet', aspect='auto', vmin=vmin, vmax=vmax)
-cbar = plt.colorbar()
-plt.ylim(950, 1050)
-cbar.set_label('Velocity')
 
-# Set custom x-axis ticks
-custom_x_ticks = [0, 400, 800, 1200, 1600, 1980]
-custom_x_tick_labels = ['0', '20', '40', '60', '80', '100']
-plt.xticks(custom_x_ticks, custom_x_tick_labels)
+# Normalize the x-axis and y-axis by dividing by the diameter of the beam (D)
+D = 0.062
+num_points = 2497
+
+normalized_x_axis = np.linspace(0/D, 6.2/D, num_points)
+normalized_y_axis = np.linspace(1/D, -1/D, len(velocity_field))
+
+# Plot the data with the normalized x and y axes
+plt.figure(figsize=(12, 6))
+plt.imshow(velocity_field, cmap='jet', aspect='auto',
+           extent=[0/D, 6.2/D, -1/D, 1/D],
+           vmin=velocity_field[:, 1:].min(), vmax=velocity_field[:, 1:].max())
+cbar = plt.colorbar()
+cbar.set_label('Velocity')
 plt.xlabel('x/D')
-custom_y_ticks = [950, 975, 1000, 1025, 1050]
-custom_y_tick_labels = ['-10', '-5', '0', '5', '10']  # ,'0.1','0.2','0.3','0.4','0.5']
-plt.yticks(custom_y_ticks, custom_y_tick_labels)
 plt.ylabel('y/D')
+
 # Save the figure with a prefix of the file name
 figure_filename = f"{file_prefix}_VelField.pdf"
 plt.savefig(figure_filename, dpi=1200, bbox_inches='tight')
