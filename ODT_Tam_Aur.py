@@ -188,22 +188,46 @@ plt.figure()
 #     plt.plot(st,sp,c='grey')
 for sp in sp_values:
     plt.plot(st[::skip_interval], sp[::skip_interval], 'ro', markersize=3, alpha=0.02, markeredgecolor='red')
-# plt.plot(st,sp_average, 'k--', label='Average')
+plt.plot(st,np.mean(sp_values, axis=0), 'k--', label='Average')
 plt.semilogx()  # Set logarithmic scale on x-axis       
 plt.xlabel('Strouhal number $[St]$')
 plt.ylabel('Sound Pressure Level $[L_p]$')
+# plt.xlim([0.01, .21])
+plt.legend()
 # plt.ylim([0, 250])
 # plt.xlim([0.1, 2])
 # plt.title('sp_values Plot')
 # plt.legend(range(len(sp_values)))  # Add legend for each sp_values
-plt.savefig('spectra_new.pdf', dpi=80)
+plt.savefig('SPL_St.pdf', dpi=80)
 # plt.show()
 
-plt.semilogx(st,sp,label='CW1', color='black')
-# plt.ylim([0, 250])
-plt.xlim([0.01, 2])
-plt.legend()
+plt.rcParams['font.family'] = 'serif'
+# plt.rcParams['font.serif'] = ['Computer Modern Roman']
+# plt.rcParams['font.serif'] = ['Times New Roman']
+plt.rcParams['font.size'] = 11
+plt.figure()
+csv_file_path = 'C:\\Users\shar_sp\Downloads\Default Dataset.csv'
+df = pd.read_csv(csv_file_path)
 
-plt.savefig('spectra2.pdf')
+# Plot the first and second columns
+plt.plot(df.iloc[:, 0],df.iloc[:, 1],'b-', label='Experiment')  # Assuming 0-indexed columns
+# plt.plot(, label='Column 2')  # Assuming 0-indexed columns
+# for sp in sp_values:
+#     plt.plot(st,sp,c='grey')
+for sp in sp_values:
+    plt.plot(freq[::skip_interval], sp[::skip_interval], 'ro', markersize=3, alpha=0.02, markeredgecolor='red')
+plt.legend(['All Plots'])    
+plt.plot(freq,np.mean(sp_values, axis=0), 'k-', label='Numerical')
+plt.semilogx()  # Set logarithmic scale on x-axis       
+plt.xlabel('Frequency $[f]$')
+plt.ylabel('Sound Pressure Level $[L_p]$')
+# plt.xlim([0.01, .21])
+plt.legend()
+plt.ylim([-10, 60])
+plt.xlim([500,20000])
+# plt.title('sp_values Plot')
+# plt.legend(range(len(sp_values)))  # Add legend for each sp_values
+plt.savefig('SPL_freq.pdf', dpi=80)
+# plt.show()
 
 
